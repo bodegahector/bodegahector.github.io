@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Bodega Hector - Bienvenido</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: url('https://img.freepik.com/vector-gratis/interior-panaderia-escaparate-panaderia_1308-129105.jpg?semt=ais_items_boosted&w=740') no-repeat center center fixed; 
+            background-size: cover;
+            margin: 0; 
+            padding: 0; 
+        }
+        .container { max-width: 600px; margin: 40px auto; background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px #ccc; }
+        h1 { text-align: center; }
+        .articulos { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+        .articulo { display: flex; align-items: center; gap: 16px; background: #f1f1f1; padding: 12px; border-radius: 6px; }
+        .articulo img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; }
+        .articulo-info { flex: 1; }
+        .articulo-nombre { font-weight: bold; }
+        .articulo-precio { color: #555; }
+        .articulo button { padding: 6px 12px; border: none; background: #007bff; color: #fff; border-radius: 4px; cursor: pointer; }
+        .articulo button:hover { background: #0056b3; }
+        .lista { margin-top: 24px; }
+        .lista h2 { margin-bottom: 12px; }
+        .lista ul { list-style: none; padding: 0; }
+        .lista li { margin-bottom: 8px; }
+        .total-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 16px;
+        }
+        .total { font-weight: bold; }
+        .comprar-btn {
+            padding: 8px 16px;
+            border: none;
+            background: #28a745;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .comprar-btn:hover {
+            background: #218838;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 24px 32px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px #888;
+            max-width: 90vw;
+        }
+        .modal-content h3 { 
+            margin-top: 0; 
+            text-align: center;
+        }
+        .modal-actions {
+            margin-top: 18px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .modal-actions .pagar-btn,
+        .modal-actions .modal-close {
+            margin-left: 0;
+        }
+        .modal-actions .modal-close {
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+        .modal-actions .modal-close:hover {
+            background: #b52a37;
+        }
+        .pago-info {
+            margin-top: 12px;
+            font-size: 16px;
+        }
+        .pago-info span {
+            display: block;
+            margin-bottom: 4px;
+        }
+        .pagar-btn {
+            padding: 8px 16px;
+            border: none;
+            background: #25d366;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .pagar-btn:hover {
+            background: #1ebe57;
+        }
+        /* Centrar el botón Comprar */
+        .total-row {
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .total-row .total {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bodega Hector</h1>
+        <div class="articulos">
+            <div class="articulo">
+                <img src="https://img.freepik.com/vector-premium/ilustracion-vectorial-panes-bolsas_1021317-158.jpg" alt="Pan Frances">
+                <div class="articulo-info">
+                    <div class="articulo-nombre">Pan Frances</div>
+                    <div class="articulo-precio">90bs</div>
+                </div>
+                <button onclick="agregarArticulo('Pan Frances', 90)">Añadir</button>
+            </div>
+            <div class="articulo">
+                <img src="https://panymas.com/wp-content/uploads/2019/12/MG_8664.jpg" alt="Pan Dulce">
+                <div class="articulo-info">
+                    <div class="articulo-nombre">Pan Dulce</div>
+                    <div class="articulo-precio">100bs</div>
+                </div>
+                <button onclick="agregarArticulo('Pan Dulce', 100)">Añadir</button>
+            </div>
+            <div class="articulo">
+                <img src="https://media.istockphoto.com/id/1448558673/es/vector/rosquilla-roja-ilustraci%C3%B3n-vectorial-dibujos-animados.jpg?s=170667a&w=0&k=20&c=wNpaCVyvFTsTUlCqUOWmWSyRthtGQWzD-Mn1R8eXdWU=" alt="Rosca Roja">
+                <div class="articulo-info">
+                    <div class="articulo-nombre">Rosca Roja</div>
+                    <div class="articulo-precio">15bs</div>
+                </div>
+                <button onclick="agregarArticulo('Rosca Roja', 15)">Añadir</button>
+            </div>
+        </div>
+        <div class="lista">
+            <h2>Artículos en la lista</h2>
+            <ul id="lista-articulos"></ul>
+            <div class="total-row">
+                <div class="total" id="total-compra">Total: 0bs</div>
+                <button class="comprar-btn" onclick="mostrarPago()">Comprar</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="modal-pago">
+        <div class="modal-content">
+            <h3>Pago Móvil</h3>
+            <div class="pago-info">
+                <span><strong>Teléfono:</strong> 04243033799</span>
+                <span><strong>Cédula:</strong> 12172492</span>
+                <span><strong>Banco:</strong> Venezuela (0102)</span>
+            </div>
+            <div class="modal-actions">
+                <button class="pagar-btn" onclick="enviarWhatsapp()">Pagar</button>
+                <button class="modal-close" onclick="cerrarPago()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const lista = {};
+        function agregarArticulo(nombre, precio) {
+            if (!lista[nombre]) {
+                lista[nombre] = { cantidad: 0, precio: precio };
+            }
+            lista[nombre].cantidad += 1;
+            actualizarLista();
+        }
+        function actualizarLista() {
+            const ul = document.getElementById('lista-articulos');
+            ul.innerHTML = '';
+            let total = 0;
+            for (const nombre in lista) {
+                const { cantidad, precio } = lista[nombre];
+                total += cantidad * precio;
+                const li = document.createElement('li');
+                li.textContent = `${nombre} x${cantidad} - ${cantidad * precio}bs`;
+                ul.appendChild(li);
+            }
+            document.getElementById('total-compra').textContent = `Total: ${total}bs`;
+        }
+        function mostrarPago() {
+            document.getElementById('modal-pago').style.display = 'flex';
+        }
+        function cerrarPago() {
+            document.getElementById('modal-pago').style.display = 'none';
+        }
+        function enviarWhatsapp() {
+            let mensaje = "Hola, Quiero pagar mi compra:\n";
+            let total = 0;
+            for (const nombre in lista) {
+                const { cantidad, precio } = lista[nombre];
+                mensaje += `- ${nombre} x${cantidad} = ${cantidad * precio}bs\n`;
+                total += cantidad * precio;
+            }
+            mensaje += `Total: ${total}bs`;
+            const telefono = "584243033799"; // Número en formato internacional sin +
+            const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
