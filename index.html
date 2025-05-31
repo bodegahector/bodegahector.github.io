@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Bodega Hector - Bienvenido</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <style>
         :root {
             --primary: #007bff;
@@ -17,6 +17,8 @@
             --bg: #f7f7f9;
             --card-bg: #fff;
             --shadow: 0 4px 16px rgba(0,0,0,0.08);
+            --bdv: #f7c325;
+            --bdv-dark: #e6b100;
         }
         html, body {
             height: 100%;
@@ -38,7 +40,7 @@
             max-width: 420px;
             margin: 0 auto;
             background: var(--card-bg);
-            border-radius: 18px 18px 0 0;
+            border-radius: 18px 18px 18px 18px;
             box-shadow: var(--shadow);
             padding: 24px 16px 32px 16px;
             margin-top: 32px;
@@ -47,9 +49,9 @@
         }
         h1 {
             text-align: center;
-            margin-bottom: 18px;
-            font-size: 2rem;
-            color: var(--primary);
+            margin-bottom:18px;
+            font-size: 2.4rem;
+            color: #1cca59;
             letter-spacing: 1px;
         }
         .articulos {
@@ -57,6 +59,10 @@
             flex-direction: column;
             gap: 18px;
             margin-bottom: 28px;
+            border: 2px solid #e0e0e0;
+            border-radius: 14px 14px 14px 14px;
+            background: #fafafa;
+            box-shadow: 0 2px 8px #ececec;
         }
         .articulo {
             display: flex;
@@ -96,6 +102,7 @@
             font-size: 1rem;
             transition: background 0.2s;
         }
+        .articulo button:active,
         .articulo button:hover {
             background: var(--primary-dark);
         }
@@ -143,18 +150,29 @@
             font-weight: 500;
             box-shadow: 0 2px 6px #d0e8d0;
             transition: background 0.2s;
+            display: block;
+            margin: 0 auto;
         }
+        .comprar-btn:active,
         .comprar-btn:hover {
             background: var(--success-dark);
         }
+        /* --- EFECTOS SUAVES PARA EL MODAL --- */
         .modal {
-            display: none;
+            display: flex;
+            opacity: 0;
+            pointer-events: none;
             position: fixed;
             z-index: 1000;
             left: 0; top: 0; width: 100vw; height: 100vh;
             background: rgba(0,0,0,0.35);
             justify-content: center;
             align-items: center;
+            transition: opacity 0.35s cubic-bezier(.4,0,.2,1);
+        }
+        .modal.visible {
+            opacity: 1;
+            pointer-events: auto;
         }
         .modal-content {
             background: #fff;
@@ -164,12 +182,21 @@
             max-width: 92vw;
             width: 340px;
             text-align: center;
+            transform: translateY(40px) scale(0.98);
+            opacity: 0;
+            transition: 
+                opacity 0.35s cubic-bezier(.4,0,.2,1),
+                transform 0.35s cubic-bezier(.4,0,.2,1);
+        }
+        .modal.visible .modal-content {
+            opacity: 1;
+            transform: translateY(0) scale(1);
         }
         .modal-content h3 {
             margin-top: 0;
             margin-bottom: 10px;
             color: var(--primary);
-            font-size: 1.2rem;
+            font-size: 1.6rem; /* Aumentado el tamaño del texto Pago Móvil */
         }
         .modal-actions {
             margin-top: 18px;
@@ -177,18 +204,64 @@
             justify-content: center;
             gap: 12px;
         }
+        /* Botón Enviar Mensaje (azul como artículos) */
+        .pagar-btn {
+            padding: 9px 20px;
+            border: none;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 500;
+            transition: background 0.2s;
+            display: inline-block;
+            /* Centrado extra */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .pagar-btn:active,
+        .pagar-btn:hover {
+            background: var(--primary-dark);
+        }
+        /* Botón Ir al BDV (amarillo) */
+        .bdv-btn {
+            padding: 9px 20px;
+            border: none;
+            background: var(--bdv);
+            color: #222;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 500;
+            transition: background 0.2s;
+            display: inline-block;
+            /* Igual tamaño que cerrar */
+            min-width: 90px;
+            min-height: 44px;
+        }
+        .bdv-btn:active,
+        .bdv-btn:hover {
+            background: var(--bdv-dark);
+        }
+        /* Botón Cerrar (más rojo y centrado) */
         .modal-close {
-            background: var(--danger);
+            background: #ff1a2a;
             color: #fff;
             border: none;
             border-radius: 6px;
-            padding: 7px 16px;
+            padding: 9px 20px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.05rem;
+            font-weight: 500;
             transition: background 0.2s;
+            display: inline-block;
+            min-width: 90px;
+            min-height: 44px;
         }
+        .modal-close:active,
         .modal-close:hover {
-            background: var(--danger-dark);
+            background: #c40017;
         }
         .pago-info {
             margin-top: 12px;
@@ -199,20 +272,6 @@
         .pago-info span {
             display: block;
             margin-bottom: 5px;
-        }
-        .pagar-btn {
-            padding: 9px 20px;
-            border: none;
-            background: var(--accent);
-            color: #fff;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1.05rem;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-        .pagar-btn:hover {
-            background: var(--accent-dark);
         }
         @media (max-width: 600px) {
             .container {
@@ -230,6 +289,24 @@
                 width: 48px;
                 height: 48px;
             }
+            h1 {
+                font-size: 1.5rem;
+            }
+            .articulo-nombre {
+                font-size: 1rem;
+            }
+            .articulo-precio {
+                font-size: 0.95rem;
+            }
+            .comprar-btn, .pagar-btn, .modal-close, .articulo button, .bdv-btn {
+                font-size: 0.98rem;
+                padding: 8px 12px;
+                min-width: 70px;
+                min-height: 40px;
+            }
+            .modal-content h3 {
+                font-size: 1.25rem; /* También más grande en móvil */
+            }
         }
         @media (max-width: 400px) {
             .container {
@@ -238,6 +315,18 @@
             .modal-content {
                 padding: 10px 2vw 10px 2vw;
             }
+            .articulo img {
+                width: 38px;
+                height: 38px;
+            }
+        }
+        html {
+            scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
+        }
+        button, .articulo button {
+            min-height: 44px;
+            min-width: 44px;
         }
     </style>
 </head>
@@ -288,7 +377,8 @@
                 <span><strong>Banco:</strong> Venezuela (0102)</span>
             </div>
             <div class="modal-actions">
-                <button class="pagar-btn" onclick="enviarWhatsapp()">Pagar</button>
+                <button class="bdv-btn" onclick="enviarBDV()">Ir al BDV</button>
+                <button class="pagar-btn" onclick="enviarWhatsapp()">Enviar Mensaje</button>
                 <button class="modal-close" onclick="cerrarPago()">Cerrar</button>
             </div>
         </div>
@@ -319,10 +409,12 @@
             document.getElementById('total-compra').textContent = `Total: ${total}bs`;
         }
         function mostrarPago() {
-            document.getElementById('modal-pago').style.display = 'flex';
+            const modal = document.getElementById('modal-pago');
+            modal.classList.add('visible');
         }
         function cerrarPago() {
-            document.getElementById('modal-pago').style.display = 'none';
+            const modal = document.getElementById('modal-pago');
+            modal.classList.remove('visible');
         }
         function enviarWhatsapp() {
             let mensaje = "Hola, Quiero pagar mi compra:\n";
@@ -337,9 +429,14 @@
             const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
             window.open(url, '_blank');
         }
-        // Cerrar modal al tocar fuera del contenido
+        function enviarBDV() {
+            window.open("https://bdvenlinea.banvenez.com/", "_blank");
+        }
         document.getElementById('modal-pago').addEventListener('click', function(e) {
             if (e.target === this) cerrarPago();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') cerrarPago();
         });
     </script>
 </body>
